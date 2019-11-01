@@ -65,7 +65,7 @@ do
 echo "VM_DIR: "$VM_DIR
 
 #Clonando o HD
-vmkfstools -i "/vmfs/volumes/$VMFS_VOLUME/$VM_FOLDER/$VM_DIR"  "/vmfs/volumes/BACKUP$VM_FOLDER/$VM_FOLDER-$DATA/$VM_DIR"
+vmkfstools -i "/vmfs/volumes/$VMFS_VOLUME/$VM_FOLDER/$VM_DIR"  "/vmfs/volumes/BACKUP/$VM_FOLDER/$VM_FOLDER-$DATA/$VM_DIR"
 
 done < VMX_DIR
 
