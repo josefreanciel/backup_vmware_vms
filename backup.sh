@@ -1,5 +1,6 @@
 DATA=$(date +%d-%m-%Y)
 VMNAME=$1
+HYPERVISOR=$2
 echo $VMNAME
 
 #Listar todas as vms e jogar em um arquivo
@@ -50,7 +51,7 @@ mkdir -p "/vmfs/volumes/BACKUP/$VM_FOLDER/$VM_FOLDER-$DATA"
 fi
 
 #Copia o arquivo .vmx para a pasta de backup
-cp "$VM_PATH" /vmfs/volumes/BACKUP/ZEUS/$VM_FOLDER/$VM_FOLDER-$DATA
+cp "$VM_PATH" /vmfs/volumes/BACKUP/$VM_FOLDER/$VM_FOLDER-$DATA
 
 #Remove todos os snpashots da VM
 vim-cmd vmsvc/snapshot.removeall $VMID
