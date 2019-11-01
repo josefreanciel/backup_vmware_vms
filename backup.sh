@@ -1,6 +1,5 @@
 DATA=$(date +%d-%m-%Y)
 VMNAME=$1
-HYPERVISOR=$2
 echo $VMNAME
 
 #Listar todas as vms e jogar em um arquivo
