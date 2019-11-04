@@ -1,5 +1,5 @@
 
-DATALOG=$(date +%d-%m-%Y %h:%M)
+DATALOG=$(date +%d-%m-%Y_%H:%M)
 DATA=$(date +%d-%m-%Y)
 VMNAME=$1
 HYPERVISOR=$2
@@ -55,7 +55,7 @@ mkdir -p "/vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA"
 fi
 
 #Copia o arquivo .vmx para a pasta de backup
-cp "$VMX_PATH" /vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA/
+cp "$VMX_PATH" "/vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA/"
 
 #Remove todos os snpashots da VM
 vim-cmd vmsvc/snapshot.removeall $VMID
