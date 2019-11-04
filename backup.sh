@@ -1,6 +1,13 @@
+
+DATALOG=$(date +%d-%m-%Y %h:%M)
 DATA=$(date +%d-%m-%Y)
 VMNAME=$1
+HYPERVISOR=$2
 echo $VMNAME
+
+echo "Iniciando Backup da: "$VMNAME " em: " $DATALOG >> saida.log
+
+
 
 #Listar todas as vms e jogar em um arquivo
 vim-cmd vmsvc/getallvms | sed 's/[[:blank:]]\{3,\}/   /g' | fgrep "[" | fgrep "vmx-" | fgrep ".vmx" | fgrep "/" | awk -F'   ' '{print "\""$1"\";\""$2"\";\""$3"\""}' |  sed 's/\] /\]\";\"/g' | sed 's/\//;/g'> vms_list
@@ -23,18 +30,16 @@ VMX_PATH="/vmfs/volumes/${VMFS_VOLUME}/${VM_FOLDER}/${VMX}"
 #Pegando a referencia dos HDs da VM e jogando para o arquivo VMX_DIR
 grep -E  fileName "$VMX_PATH" | grep vmdk |  sed 's/ "/;/' | cut -d";" -f2 | sed 's/"//' > VMX_DIR
 
-
-
 echo "VMFS_VOLUME: "$VMFS_VOLUME
 echo "VMID: "$VMID
 echo "VM_FOLDER: "$VM_FOLDER
 echo "VMX: "$VMX
 echo "VM_PATH: "$VMX_PATH
 echo $VMX_DIRS
-echo /vmfs/volumes/BACKUP/$VM_FOLDER/$VM_FOLDER-$DATA
+echo /vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA
 
 #Verifica se a pasta existe no meu servidor.
-if [ -d "/vmfs/volumes/BACKUP/$VM_FOLDER/$VM_FOLDER-$DATA" ];
+if [ -d "/vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA" ];
 
 then
 
@@ -45,12 +50,12 @@ else
 
 echo "Criando a pasta"
 
-mkdir -p "/vmfs/volumes/BACKUP/$VM_FOLDER/$VM_FOLDER-$DATA"
+mkdir -p "/vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA"
 
 fi
 
 #Copia o arquivo .vmx para a pasta de backup
-cp "$VM_PATH" /vmfs/volumes/BACKUP/$VM_FOLDER/$VM_FOLDER-$DATA
+cp "$VMX_PATH" /vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA/
 
 #Remove todos os snpashots da VM
 vim-cmd vmsvc/snapshot.removeall $VMID
@@ -65,11 +70,11 @@ do
 echo "VM_DIR: "$VM_DIR
 
 #Clonando o HD
-vmkfstools -i "/vmfs/volumes/$VMFS_VOLUME/$VM_FOLDER/$VM_DIR"  "/vmfs/volumes/BACKUP/$VM_FOLDER/$VM_FOLDER-$DATA/$VM_DIR"
+vmkfstools -i "/vmfs/volumes/$VMFS_VOLUME/$VM_FOLDER/$VM_DIR"  "/vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA/$VM_DIR"
 
 done < VMX_DIR
-
 
 #Remove o snpashot que foi criando para fazer o backup da maquina.
 vim-cmd vmsvc/snapshot.removeall $VMID
 
+echo "Finalizando Backup da: "$VMNAME " em: " $DATALOG >> saida.log
