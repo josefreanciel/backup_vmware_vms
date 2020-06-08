@@ -2,7 +2,7 @@
 DATALOG=$(date +%d-%m-%Y_%H:%M)
 DATA=$(date +%d-%m-%Y)
 VMNAME=$1
-HYPERVISOR=$2
+DIRETORIODESTINO=/vmfs/volumes/BACKUP
 echo $VMNAME
 
 echo "Iniciando Backup da: "$VMNAME " em: " $DATALOG >> saida.log
@@ -39,7 +39,7 @@ echo $VMX_DIRS
 echo /vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA
 
 #Verifica se a pasta existe no meu servidor.
-if [ -d "/vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA" ];
+if [ -d "$DIRETORIODESTINO/$VM_FOLDER/$VM_FOLDER-$DATA" ];
 
 then
 
@@ -50,12 +50,12 @@ else
 
 echo "Criando a pasta"
 
-mkdir -p "/vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA"
+mkdir -p "$DIRETORIODESTINO/$VM_FOLDER/$VM_FOLDER-$DATA"
 
 fi
 
 #Copia o arquivo .vmx para a pasta de backup
-cp "$VMX_PATH" "/vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA/"
+cp "$VMX_PATH" "$DIRETORIODESTINO/$VM_FOLDER/$VM_FOLDER-$DATA/"
 
 #Remove todos os snpashots da VM
 vim-cmd vmsvc/snapshot.removeall $VMID
@@ -70,7 +70,7 @@ do
 echo "VM_DIR: "$VM_DIR
 
 #Clonando o HD
-vmkfstools -i "/vmfs/volumes/$VMFS_VOLUME/$VM_FOLDER/$VM_DIR"  "/vmfs/volumes/BACKUP/$HYPERVISOR/$VM_FOLDER/$VM_FOLDER-$DATA/$VM_DIR"
+vmkfstools -i "/vmfs/volumes/$VMFS_VOLUME/$VM_FOLDER/$VM_DIR"  "$DIRETORIODESTINO/$VM_FOLDER/$VM_FOLDER-$DATA/$VM_DIR"
 
 done < VMX_DIR
 
